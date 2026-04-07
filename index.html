@@ -255,6 +255,19 @@ h1 {
   border: 1px solid rgba(138,90,85,0.15);
 }
 
+.box-toggle-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.box-toggle {
+  min-height: 44px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
 label {
   display: block;
   font-size: 0.92rem;
@@ -573,6 +586,17 @@ dialog::backdrop {
               <option value="soft">Soft (falsch → 1 Fach zurück)</option>
             </select>
 
+            <div>
+              <label>Fächer für diese Session</label>
+              <div class="box-toggle-group" id="boxSelection">
+                <button class="btn btn-primary box-toggle" type="button" data-box-toggle="1">Fach 1</button>
+                <button class="btn btn-primary box-toggle" type="button" data-box-toggle="2">Fach 2</button>
+                <button class="btn btn-primary box-toggle" type="button" data-box-toggle="3">Fach 3</button>
+                <button class="btn btn-primary box-toggle" type="button" data-box-toggle="4">Fach 4</button>
+                <button class="btn btn-primary box-toggle" type="button" data-box-toggle="5">Fach 5</button>
+              </div>
+            </div>
+
             <button class="btn btn-primary" id="startStudyBtn">Heute lernen</button>
             <button class="btn btn-secondary" id="goAddBtn">Neue Vokabel</button>
             <button class="btn btn-secondary" id="goListBtn">Alle Vokabeln</button>
@@ -670,6 +694,7 @@ dialog::backdrop {
 <script>
 const KEY = 'leitner_final_reskinned_v1';
 const MODE_KEY = 'leitner_mode_final_reskinned_v1';
+const SESSION_BOXES_KEY = 'leitner_session_boxes_v1';
 const INTERVALS = { 1: 1, 2: 3, 3: 7, 4: 14, 5: 30 };
 
 const state = {
@@ -684,6 +709,7 @@ const state = {
   memoryOnly: false,
   studyResults: { correct: 0, wrong: 0 },
   feedbackTimer: null,
+  selectedBoxes: [1, 2, 3, 4, 5],
 };
 
 const els = {
@@ -703,6 +729,7 @@ const els = {
   homeMessage: document.getElementById('homeMessage'),
 
   modeSelect: document.getElementById('modeSelect'),
+  boxButtons: document.querySelectorAll('[data-box-toggle]'),
 
   addTitle: document.getElementById('addTitle'),
   addForm: document.getElementById('addForm'),
@@ -789,10 +816,19 @@ function normalizeCard(card) {
   };
 }
 
+function saveSessionBoxes() {
+  try {
+    if (state.storageAvailable) {
+      localStorage.setItem(SESSION_BOXES_KEY, JSON.stringify(state.selectedBoxes));
+    }
+  } catch {}
+}
+
 function save() {
   try {
     if (state.storageAvailable) {
       localStorage.setItem(KEY, JSON.stringify(state.cards));
+      saveSessionBoxes();
     }
   } catch {
     state.memoryOnly = true;
@@ -812,6 +848,18 @@ function load() {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
           state.cards = parsed.map(normalizeCard).filter(card => card.german && card.turkish);
+        }
+      }
+
+      const savedBoxes = localStorage.getItem(SESSION_BOXES_KEY);
+      if (savedBoxes) {
+        const parsedBoxes = JSON.parse(savedBoxes);
+        if (Array.isArray(parsedBoxes)) {
+          const cleaned = parsedBoxes
+            .map(Number)
+            .filter(box => Number.isInteger(box) && box >= 1 && box <= 5)
+            .sort((a, b) => a - b);
+          if (cleaned.length) state.selectedBoxes = [...new Set(cleaned)];
         }
       }
     }
@@ -852,6 +900,10 @@ function getDueCards() {
   return state.cards.filter(card => (card.nextReviewAt || today) <= today);
 }
 
+function getDueCardsForSelectedBoxes() {
+  return getDueCards().filter(card => state.selectedBoxes.includes(card.box));
+}
+
 function getTodayStats() {
   const today = todayString();
   const learned = state.cards.filter(card => card.lastReviewedAt === today).length;
@@ -871,6 +923,36 @@ function sortCards(cards) {
   });
 }
 
+function shuffleArray(items) {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function syncBoxButtons() {
+  els.boxButtons.forEach(button => {
+    const box = Number(button.dataset.boxToggle);
+    button.className = `btn box-toggle ${state.selectedBoxes.includes(box) ? 'btn-primary' : 'btn-secondary'}`;
+  });
+}
+
+function toggleBoxSelection(box) {
+  if (state.selectedBoxes.includes(box)) {
+    if (state.selectedBoxes.length === 1) {
+      showToast('Mindestens ein Fach muss aktiv bleiben.');
+      return;
+    }
+    state.selectedBoxes = state.selectedBoxes.filter(value => value !== box);
+  } else {
+    state.selectedBoxes = [...state.selectedBoxes, box].sort((a, b) => a - b);
+  }
+  saveSessionBoxes();
+  renderAll();
+}
+
 function resetAddForm() {
   state.editId = null;
   els.addTitle.textContent = 'Neue Vokabel';
@@ -880,9 +962,10 @@ function resetAddForm() {
 }
 
 function renderHome() {
-  const due = getDueCards().length;
+  const due = getDueCardsForSelectedBoxes().length;
   const total = state.cards.length;
   const stats = getTodayStats();
+  const selectedLabel = state.selectedBoxes.join(', ');
 
   els.dueCount.textContent = String(due);
   els.totalCount.textContent = String(total);
@@ -892,10 +975,12 @@ function renderHome() {
   if (total === 0) {
     els.homeMessage.textContent = 'Lege deine ersten Vokabeln an. Danach kannst du direkt mit dem Lernen starten.';
   } else if (due === 0) {
-    els.homeMessage.textContent = 'Heute nichts zu lernen – perfekt. Du kannst neue Vokabeln hinzufügen oder später weitermachen.';
+    els.homeMessage.textContent = `In den gewählten Fächern (${selectedLabel}) ist heute nichts fällig.`;
   } else {
-    els.homeMessage.textContent = `Heute warten ${due} ${due === 1 ? 'Karte' : 'Karten'} auf dich.`;
+    els.homeMessage.textContent = `In den gewählten Fächern (${selectedLabel}) warten heute ${due} ${due === 1 ? 'Karte' : 'Karten'} auf dich.`;
   }
+
+  syncBoxButtons();
 }
 
 function addCard(german, turkish) {
@@ -967,7 +1052,21 @@ function currentCard() {
 }
 
 function startSession() {
-  state.currentSession = sortCards(getDueCards()).map(card => card.id);
+  const dueCards = getDueCardsForSelectedBoxes();
+  const grouped = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+
+  dueCards.forEach(card => {
+    grouped[card.box].push(card.id);
+  });
+
+  state.currentSession = [
+    ...shuffleArray(grouped[1]),
+    ...shuffleArray(grouped[2]),
+    ...shuffleArray(grouped[3]),
+    ...shuffleArray(grouped[4]),
+    ...shuffleArray(grouped[5])
+  ];
+
   state.currentIndex = 0;
   state.revealed = false;
   state.studyResults = { correct: 0, wrong: 0 };
@@ -1019,7 +1118,7 @@ function reviewCard(knows) {
 function renderStudy() {
   const total = state.currentSession.length;
   const card = currentCard();
-  const dueCount = getDueCards().length;
+  const dueCount = getDueCardsForSelectedBoxes().length;
 
   if (!total && dueCount === 0) {
     els.sessionProgress.textContent = 'Heute nichts fällig';
@@ -1028,7 +1127,7 @@ function renderStudy() {
       <div class="empty">
         <div class="state-icon">🌿</div>
         <strong style="display:block; margin-bottom:8px; color:var(--text);">Heute nichts zu lernen</strong>
-        Du bist für heute durch. Perfekt – dein System arbeitet jetzt für dich.
+        In deinen gewählten Fächern ist heute nichts fällig.
         <div class="stack" style="margin-top:14px;">
           <button class="btn btn-primary" onclick="switchView('home')">Zur Übersicht</button>
         </div>
@@ -1069,7 +1168,7 @@ function renderStudy() {
   }
 
   els.sessionProgress.textContent = `Karte ${state.currentIndex + 1} von ${total}`;
-  els.sessionMeta.textContent = `Fach ${card.box} · nur DE → TR`;
+  els.sessionMeta.textContent = `Fach ${card.box} · random im Fach · nur DE → TR`;
 
   els.studyContent.innerHTML = `
     <div class="prompt-box tappable" id="tapCard" role="button" tabindex="0" aria-label="Antwort zeigen">
@@ -1317,6 +1416,10 @@ function renderAll() {
 els.navButtons.forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.nav)));
 
 els.modeSelect.addEventListener('change', saveMode);
+
+els.boxButtons.forEach(btn => {
+  btn.addEventListener('click', () => toggleBoxSelection(Number(btn.dataset.boxToggle)));
+});
 
 els.addForm.addEventListener('submit', e => {
   e.preventDefault();
