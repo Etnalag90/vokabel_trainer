@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<title>Türkisch Leitner</title>
+<style>
+:root {
+  --bg: #f6f1e8;
+  --surface: #fbf8f2;
+  --surface-2: #f0e8dd;
+  --surface-3: #e7ddd0;
+  --text: #2f2a24;
+  --muted: #6e655c;
+  --faint: #9f9387;
+  --accent: #3d766d;
+  --accent-2: #648f87;
+  --accent-soft: #dce7e3;
+  --danger: #8a5a55;
+  --danger-soft: #eddeda;
+  --success: #4e7c59;
+  --success-soft: #dce9df;
+  --warning-soft: #f1e7d8;
+  --border: rgba(47, 42, 36, 0.12);
+  --shadow-sm: 0 2px 10px rgba(68, 52, 35, 0.06);
+  --shadow-md: 0 14px 38px rgba(68, 52, 35, 0.10);
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --max: 780px;
+  --feedback-bg: transparent;
+  --feedback-scale: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f1c18;
+    --surface: #292520;
+    --surface-2: #312c26;
+    --surface-3: #3d362f;
+    --text: #f2eadf;
+    --muted: #c0b4a7;
+    --faint: #8f8378;
+    --accent: #7fb3aa;
+    --accent-2: #6a9b93;
+    --accent-soft: #32433f;
+    --danger: #d4a19a;
+    --danger-soft: #47312f;
+    --success: #97c19f;
+    --success-soft: #2d4034;
+    --warning-soft: #463a2d;
+    --border: rgba(255, 245, 235, 0.1);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.22);
+    --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.28);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, rgba(255,255,255,0.35), transparent 28%), var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.55;
+}
+
+button, input, select { font: inherit; }
+button {
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 24px);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--accent-soft), rgba(255,255,255,0.35));
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-sm);
+  flex: 0 0 auto;
+}
+
+.logo svg {
+  width: 24px;
+  height: 24px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.pill {
+  white-space: nowrap;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.3);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: var(--space-6);
+  position: sticky;
+  top: 12px;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.nav button {
+  min-height: 48px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.35);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 12px 10px;
+}
+
+.nav button.active {
+  background: var(--surface);
+  color: var(--text);
+  border-color: rgba(61,118,109,0.18);
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), transparent, var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.muted { color: var(--muted); }
+.small { font-size: 0.92rem; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.stat {
+  padding: 16px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent, var(--surface-2));
+  border: 1px solid var(--border);
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.2rem);
+  letter-spacing: -0.04em;
+}
+
+.stack { display: grid; gap: 12px; }
+.stack-desktop { display: grid; gap: 16px; }
+
+.btn {
+  min-height: 52px;
+  border-radius: 18px;
+  padding: 14px 16px;
+  transition: transform 120ms ease, opacity 120ms ease, background 120ms ease, filter 120ms ease;
+}
+
+.btn:hover { filter: brightness(0.99); }
+.btn:active { transform: scale(0.982); filter: brightness(0.96); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #f6f5f3;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+}
+
+.btn-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border: 1px solid rgba(138,90,85,0.15);
+}
+
+label {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="search"],
+input[type="file"],
+select {
+  width: 100%;
+  min-height: 50px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.28);
+  color: var(--text);
+  padding: 14px 16px;
+  outline: none;
+}
+
+input:focus,
+select:focus {
+  border-color: rgba(61,118,109,0.42);
+  box-shadow: 0 0 0 4px rgba(61,118,109,0.10);
+}
+
+.grid-two { display: grid; gap: 12px; }
+
+.study-shell {
+  min-height: 360px;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.prompt-box,
+.answer-box,
+.empty,
+.done-box {
+  border-radius: 24px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.prompt-box {
+  background: linear-gradient(180deg, rgba(255,255,255,0.22), transparent, var(--surface-2));
+  min-height: 210px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  transform: scale(var(--feedback-scale));
+  box-shadow: inset 0 0 0 999px var(--feedback-bg);
+}
+
+.prompt-box.tappable { cursor: pointer; }
+
+.answer-box {
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), transparent, var(--accent-soft));
+}
+
+.word-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
+.word {
+  font-size: clamp(2.2rem, 1.7rem + 3vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+  word-break: break-word;
+}
+
+.word-answer {
+  font-size: clamp(1.7rem, 1.3rem + 1.8vw, 2.35rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  font-style: italic;
+  color: color-mix(in srgb, var(--text) 88%, var(--accent) 12%);
+  word-break: break-word;
+}
+
+.tap-hint {
+  margin-top: 12px;
+  color: var(--faint);
+  font-size: 0.9rem;
+}
+
+.session-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.answer-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.empty,
+.done-box {
+  background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent, var(--surface-2));
+  color: var(--muted);
+}
+
+.done-box {
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), transparent, var(--success-soft));
+}
+
+.state-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.24);
+  margin-bottom: 12px;
+  font-size: 1.35rem;
+}
+
+.done-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.mini-stat {
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255,255,255,0.24);
+  border: 1px solid var(--border);
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.item {
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent, var(--surface));
+}
+
+.item-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.item-word {
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.meta {
+  color: var(--faint);
+  font-size: 0.86rem;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  min-height: 40px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
+mark {
+  background: var(--warning-soft);
+  color: var(--text);
+  padding: 0 2px;
+  border-radius: 4px;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + 18px);
+  transform: translateX(-50%) translateY(16px);
+  background: rgba(47,42,36,0.92);
+  color: #f7f1e8;
+  padding: 12px 16px;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+  z-index: 30;
+  box-shadow: var(--shadow-md);
+  max-width: calc(100vw - 32px);
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+dialog {
+  width: min(92vw, 420px);
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+dialog::backdrop {
+  background: rgba(0,0,0,0.32);
+}
+
+.dialog-card {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 20px;
+}
+
+.dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.footer-note {
+  color: var(--faint);
+  font-size: 0.82rem;
+  text-align: center;
+  margin-top: 18px;
+}
+
+@media (min-width: 700px) {
+  .grid-two { grid-template-columns: 1fr 1fr; }
+  .stack-desktop { grid-template-columns: 1.05fr 0.95fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 5.5h9a3 3 0 0 1 3 3v10H9a3 3 0 0 0-3 3z"></path>
+          <path d="M6 5.5v16"></path>
+          <path d="M9 9h6"></path>
+          <path d="M9 12.5h4.5"></path>
+        </svg>
+      </div>
+      <div>
+        <h1>Türkisch Leitner</h1>
+        <div class="subtitle">Ruhig lernen, lokal speichern.</div>
+      </div>
+    </div>
+    <div class="pill" id="storageStatus">Lokal</div>
+  </header>
+
+  <nav class="nav" aria-label="Hauptnavigation">
+    <button class="active" data-nav="home">Übersicht</button>
+    <button data-nav="study">Lernen</button>
+    <button data-nav="list">Vokabeln</button>
+    <button data-nav="csv">CSV</button>
+  </nav>
+
+  <main>
+    <section class="view active" id="view-home">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Heute fällig</div>
+          <div class="stat-value" id="dueCount">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Alle Karten</div>
+          <div class="stat-value" id="totalCount">0</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Heute gelernt</div>
+          <div class="stat-value" id="todayLearned">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Erfolgsquote</div>
+          <div class="stat-value" id="successRate">–</div>
+        </div>
+      </div>
+
+      <div class="stack-desktop">
+        <div class="card">
+          <h2 class="section-title">Heute</h2>
+          <p class="muted small" id="homeMessage">Deine heutigen Karten warten hier auf dich.</p>
+
+          <div class="stack" style="margin-top:16px;">
+            <label for="modeSelect">Leitner-Modus</label>
+            <select id="modeSelect">
+              <option value="classic">Klassisch (falsch → Fach 1)</option>
+              <option value="soft">Soft (falsch → 1 Fach zurück)</option>
+            </select>
+
+            <button class="btn btn-primary" id="startStudyBtn">Heute lernen</button>
+            <button class="btn btn-secondary" id="goAddBtn">Neue Vokabel</button>
+            <button class="btn btn-secondary" id="goListBtn">Alle Vokabeln</button>
+            <button class="btn btn-ghost" id="goCsvBtn">CSV Import / Export</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title" id="addTitle">Neue Vokabel</h2>
+          <form id="addForm" class="stack" autocomplete="off">
+            <div>
+              <label for="germanInput">Deutsch</label>
+              <input id="germanInput" type="text" placeholder="z. B. klein" required>
+            </div>
+            <div>
+              <label for="turkishInput">Türkisch</label>
+              <input id="turkishInput" type="text" placeholder="z. B. küçük" required>
+            </div>
+            <button class="btn btn-primary" type="submit" id="saveCardBtn">Vokabel speichern</button>
+            <button class="btn btn-secondary" type="button" id="cancelEditInlineBtn" style="display:none;">Bearbeiten abbrechen</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-study">
+      <div class="card study-shell">
+        <div class="session-row">
+          <div id="sessionProgress">Keine Session aktiv</div>
+          <div id="sessionMeta">Nur DE → TR</div>
+        </div>
+        <div id="studyContent"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-list">
+      <div class="card">
+        <h2 class="section-title">Alle Vokabeln</h2>
+
+        <div class="grid-two" style="margin-top:12px;">
+          <div>
+            <label for="searchInput">Suche</label>
+            <input id="searchInput" type="search" placeholder="Deutsch oder Türkisch suchen">
+          </div>
+          <div>
+            <label for="csvFile">CSV-Datei</label>
+            <input id="csvFile" type="file" accept=".csv">
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top:12px;">
+          <button class="btn btn-secondary" id="importCsvBtn">CSV importieren</button>
+          <button class="btn btn-primary" id="exportCsvBtn">CSV mit Fortschritt exportieren</button>
+          <div class="small muted" id="csvStatus"></div>
+        </div>
+
+        <div id="listContainer" class="list" style="margin-top:16px;"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-csv">
+      <div class="card">
+        <h2 class="section-title">CSV Import / Export</h2>
+        <p class="muted small">Unterstützte Spalten: Deutsch, Türkisch, Fach, Richtig, Falsch, Erstellt am, Zuletzt gelernt, Nächste Wiederholung</p>
+
+        <div class="stack" style="margin-top:16px;">
+          <div>
+            <label for="csvFileMirror">CSV-Datei aus Numbers</label>
+            <input id="csvFileMirror" type="file" accept=".csv">
+          </div>
+          <button class="btn btn-primary" id="importCsvBtnMirror">CSV importieren</button>
+          <button class="btn btn-secondary" id="exportCsvBtnMirror">CSV exportieren</button>
+          <div class="small muted" id="csvStatusMirror"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <p class="footer-note">Alles bleibt lokal auf deinem Gerät, sofern dein Browser-Speicher verfügbar ist.</p>
+</div>
+
+<dialog id="confirmDialog">
+  <div class="dialog-card">
+    <h3 style="margin:0 0 8px;">Vokabel löschen?</h3>
+    <p class="muted small" id="confirmText">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" id="cancelDeleteBtn">Abbrechen</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Löschen</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'leitner_final_reskinned_v1';
+const MODE_KEY = 'leitner_mode_final_reskinned_v1';
+const INTERVALS = { 1: 1, 2: 3, 3: 7, 4: 14, 5: 30 };
+
+const state = {
+  cards: [],
+  currentView: 'home',
+  currentSession: [],
+  currentIndex: 0,
+  revealed: false,
+  deleteId: null,
+  editId: null,
+  storageAvailable: false,
+  memoryOnly: false,
+  studyResults: { correct: 0, wrong: 0 },
+  feedbackTimer: null,
+};
+
+const els = {
+  navButtons: document.querySelectorAll('[data-nav]'),
+  views: {
+    home: document.getElementById('view-home'),
+    study: document.getElementById('view-study'),
+    list: document.getElementById('view-list'),
+    csv: document.getElementById('view-csv'),
+  },
+  storageStatus: document.getElementById('storageStatus'),
+
+  dueCount: document.getElementById('dueCount'),
+  totalCount: document.getElementById('totalCount'),
+  todayLearned: document.getElementById('todayLearned'),
+  successRate: document.getElementById('successRate'),
+  homeMessage: document.getElementById('homeMessage'),
+
+  modeSelect: document.getElementById('modeSelect'),
+
+  addTitle: document.getElementById('addTitle'),
+  addForm: document.getElementById('addForm'),
+  germanInput: document.getElementById('germanInput'),
+  turkishInput: document.getElementById('turkishInput'),
+  saveCardBtn: document.getElementById('saveCardBtn'),
+  cancelEditInlineBtn: document.getElementById('cancelEditInlineBtn'),
+
+  startStudyBtn: document.getElementById('startStudyBtn'),
+  goAddBtn: document.getElementById('goAddBtn'),
+  goListBtn: document.getElementById('goListBtn'),
+  goCsvBtn: document.getElementById('goCsvBtn'),
+
+  studyContent: document.getElementById('studyContent'),
+  sessionProgress: document.getElementById('sessionProgress'),
+  sessionMeta: document.getElementById('sessionMeta'),
+
+  searchInput: document.getElementById('searchInput'),
+  listContainer: document.getElementById('listContainer'),
+
+  csvFile: document.getElementById('csvFile'),
+  importCsvBtn: document.getElementById('importCsvBtn'),
+  exportCsvBtn: document.getElementById('exportCsvBtn'),
+  csvStatus: document.getElementById('csvStatus'),
+
+  csvFileMirror: document.getElementById('csvFileMirror'),
+  importCsvBtnMirror: document.getElementById('importCsvBtnMirror'),
+  exportCsvBtnMirror: document.getElementById('exportCsvBtnMirror'),
+  csvStatusMirror: document.getElementById('csvStatusMirror'),
+
+  confirmDialog: document.getElementById('confirmDialog'),
+  confirmText: document.getElementById('confirmText'),
+  cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
+  confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
+
+  toast: document.getElementById('toast'),
+};
+
+function todayString() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d.toISOString().slice(0,10);
+}
+
+function addDays(baseDateString, days) {
+  const d = baseDateString ? new Date(baseDateString + 'T00:00:00') : new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0,10);
+}
+
+function isValidDateString(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ''))) return false;
+  const d = new Date(value + 'T00:00:00');
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0,10) === value;
+}
+
+function safeStorageAvailable() {
+  try {
+    const k = 'leitner-test';
+    localStorage.setItem(k, '1');
+    localStorage.removeItem(k);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function normalizeCard(card) {
+  const createdAt = isValidDateString(card.createdAt) ? card.createdAt : todayString();
+  const lastReviewedAt = isValidDateString(card.lastReviewedAt) ? card.lastReviewedAt : '';
+  const nextReviewAt = isValidDateString(card.nextReviewAt) ? card.nextReviewAt : createdAt;
+
+  return {
+    id: String(card.id || (crypto.randomUUID ? crypto.randomUUID() : Date.now() + Math.random())),
+    german: String(card.german || '').trim(),
+    turkish: String(card.turkish || '').trim(),
+    box: Math.min(5, Math.max(1, Number(card.box || 1))),
+    createdAt,
+    lastReviewedAt,
+    nextReviewAt,
+    correctCount: Math.max(0, Number(card.correctCount || 0)),
+    wrongCount: Math.max(0, Number(card.wrongCount || 0)),
+  };
+}
+
+function save() {
+  try {
+    if (state.storageAvailable) {
+      localStorage.setItem(KEY, JSON.stringify(state.cards));
+    }
+  } catch {
+    state.memoryOnly = true;
+    els.storageStatus.textContent = 'Nur Sitzung';
+  }
+}
+
+function load() {
+  state.storageAvailable = safeStorageAvailable();
+  state.memoryOnly = !state.storageAvailable;
+  els.storageStatus.textContent = state.storageAvailable ? 'Lokal gespeichert' : 'Nur Sitzung';
+
+  try {
+    if (state.storageAvailable) {
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          state.cards = parsed.map(normalizeCard).filter(card => card.german && card.turkish);
+        }
+      }
+    }
+  } catch {
+    state.cards = [];
+    state.memoryOnly = true;
+    els.storageStatus.textContent = 'Nur Sitzung';
+  }
+
+  const savedMode = localStorage.getItem(MODE_KEY) || 'classic';
+  els.modeSelect.value = savedMode;
+}
+
+function saveMode() {
+  try {
+    localStorage.setItem(MODE_KEY, els.modeSelect.value);
+  } catch {}
+}
+
+function showToast(message) {
+  els.toast.textContent = message;
+  els.toast.classList.add('show');
+  clearTimeout(showToast.t);
+  showToast.t = setTimeout(() => els.toast.classList.remove('show'), 2200);
+}
+
+function switchView(view) {
+  state.currentView = view;
+  Object.entries(els.views).forEach(([key, el]) => el.classList.toggle('active', key === view));
+  els.navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.nav === view));
+  if (view === 'home') renderHome();
+  if (view === 'study') renderStudy();
+  if (view === 'list') renderList();
+}
+
+function getDueCards() {
+  const today = todayString();
+  return state.cards.filter(card => (card.nextReviewAt || today) <= today);
+}
+
+function getTodayStats() {
+  const today = todayString();
+  const learned = state.cards.filter(card => card.lastReviewedAt === today).length;
+  const correct = state.cards.reduce((sum, card) => sum + Number(card.correctCount || 0), 0);
+  const wrong = state.cards.reduce((sum, card) => sum + Number(card.wrongCount || 0), 0);
+  const totalAnswers = correct + wrong;
+  return {
+    learned,
+    rate: totalAnswers ? Math.round((correct / totalAnswers) * 100) : null
+  };
+}
+
+function sortCards(cards) {
+  return [...cards].sort((a, b) => {
+    if (a.nextReviewAt !== b.nextReviewAt) return String(a.nextReviewAt).localeCompare(String(b.nextReviewAt));
+    return String(a.createdAt).localeCompare(String(b.createdAt));
+  });
+}
+
+function resetAddForm() {
+  state.editId = null;
+  els.addTitle.textContent = 'Neue Vokabel';
+  els.saveCardBtn.textContent = 'Vokabel speichern';
+  els.cancelEditInlineBtn.style.display = 'none';
+  els.addForm.reset();
+}
+
+function renderHome() {
+  const due = getDueCards().length;
+  const total = state.cards.length;
+  const stats = getTodayStats();
+
+  els.dueCount.textContent = String(due);
+  els.totalCount.textContent = String(total);
+  els.todayLearned.textContent = String(stats.learned);
+  els.successRate.textContent = stats.rate !== null ? stats.rate + '%' : '–';
+
+  if (total === 0) {
+    els.homeMessage.textContent = 'Lege deine ersten Vokabeln an. Danach kannst du direkt mit dem Lernen starten.';
+  } else if (due === 0) {
+    els.homeMessage.textContent = 'Heute nichts zu lernen – perfekt. Du kannst neue Vokabeln hinzufügen oder später weitermachen.';
+  } else {
+    els.homeMessage.textContent = `Heute warten ${due} ${due === 1 ? 'Karte' : 'Karten'} auf dich.`;
+  }
+}
+
+function addCard(german, turkish) {
+  const now = todayString();
+  const card = normalizeCard({
+    id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+    german,
+    turkish,
+    box: 1,
+    createdAt: now,
+    lastReviewedAt: '',
+    nextReviewAt: now,
+    correctCount: 0,
+    wrongCount: 0,
+  });
+  state.cards.unshift(card);
+  save();
+  renderAll();
+}
+
+function updateCard(id, german, turkish) {
+  const card = state.cards.find(c => c.id === id);
+  if (!card) return;
+  card.german = german.trim();
+  card.turkish = turkish.trim();
+  save();
+  renderAll();
+  showToast('Vokabel gespeichert.');
+}
+
+function openEdit(id) {
+  const card = state.cards.find(c => c.id === id);
+  if (!card) return;
+  state.editId = id;
+  els.addTitle.textContent = 'Vokabel bearbeiten';
+  els.saveCardBtn.textContent = 'Änderungen speichern';
+  els.cancelEditInlineBtn.style.display = 'block';
+  els.germanInput.value = card.german;
+  els.turkishInput.value = card.turkish;
+  switchView('home');
+  setTimeout(() => els.germanInput.focus(), 60);
+}
+
+function cancelEdit() {
+  resetAddForm();
+  switchView('list');
+  renderList();
+}
+
+function openDelete(id) {
+  const card = state.cards.find(c => c.id === id);
+  if (!card) return;
+  state.deleteId = id;
+  els.confirmText.textContent = `"${card.german}" / "${card.turkish}" wirklich löschen?`;
+  els.confirmDialog.showModal();
+}
+
+function deleteCard(id) {
+  state.cards = state.cards.filter(card => card.id !== id);
+  state.currentSession = state.currentSession.filter(cardId => cardId !== id);
+  save();
+  renderAll();
+  showToast('Vokabel gelöscht.');
+}
+
+function currentCard() {
+  const id = state.currentSession[state.currentIndex];
+  return state.cards.find(card => card.id === id) || null;
+}
+
+function startSession() {
+  state.currentSession = sortCards(getDueCards()).map(card => card.id);
+  state.currentIndex = 0;
+  state.revealed = false;
+  state.studyResults = { correct: 0, wrong: 0 };
+  switchView('study');
+}
+
+function triggerFeedback(type) {
+  clearTimeout(state.feedbackTimer);
+  const root = document.documentElement;
+  if (type === 'success') {
+    root.style.setProperty('--feedback-bg', 'rgba(78, 124, 89, 0.12)');
+    root.style.setProperty('--feedback-scale', '0.992');
+  } else {
+    root.style.setProperty('--feedback-bg', 'rgba(138, 90, 85, 0.12)');
+    root.style.setProperty('--feedback-scale', '0.992');
+  }
+  state.feedbackTimer = setTimeout(() => {
+    root.style.setProperty('--feedback-bg', 'transparent');
+    root.style.setProperty('--feedback-scale', '1');
+  }, 150);
+}
+
+function reviewCard(knows) {
+  const card = currentCard();
+  if (!card) return;
+  const today = todayString();
+
+  triggerFeedback(knows ? 'success' : 'error');
+
+  if (knows) {
+    card.box = Math.min(5, card.box + 1);
+    card.correctCount += 1;
+    state.studyResults.correct += 1;
+  } else {
+    card.box = els.modeSelect.value === 'soft' ? Math.max(1, card.box - 1) : 1;
+    card.wrongCount += 1;
+    state.studyResults.wrong += 1;
+  }
+
+  card.lastReviewedAt = today;
+  card.nextReviewAt = addDays(today, INTERVALS[card.box]);
+  save();
+
+  state.currentIndex += 1;
+  state.revealed = false;
+  renderAll();
+}
+
+function renderStudy() {
+  const total = state.currentSession.length;
+  const card = currentCard();
+  const dueCount = getDueCards().length;
+
+  if (!total && dueCount === 0) {
+    els.sessionProgress.textContent = 'Heute nichts fällig';
+    els.sessionMeta.textContent = 'Ruhe gehört auch dazu';
+    els.studyContent.innerHTML = `
+      <div class="empty">
+        <div class="state-icon">🌿</div>
+        <strong style="display:block; margin-bottom:8px; color:var(--text);">Heute nichts zu lernen</strong>
+        Du bist für heute durch. Perfekt – dein System arbeitet jetzt für dich.
+        <div class="stack" style="margin-top:14px;">
+          <button class="btn btn-primary" onclick="switchView('home')">Zur Übersicht</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if (!card) {
+    const totalAnswered = state.studyResults.correct + state.studyResults.wrong;
+    const rate = totalAnswered ? Math.round((state.studyResults.correct / totalAnswered) * 100) : null;
+
+    els.sessionProgress.textContent = `${total} von ${total}`;
+    els.sessionMeta.textContent = 'Session abgeschlossen';
+    els.studyContent.innerHTML = `
+      <div class="done-box">
+        <div class="state-icon">✨</div>
+        <strong style="display:block; margin-bottom:8px; color:var(--text);">Heute bist du durch</strong>
+        Ruhige, gute Arbeit. Deine Karten sind aktualisiert und warten jetzt auf ihren nächsten Zeitpunkt.
+        <div class="done-stats">
+          <div class="mini-stat">
+            <div class="stat-label">Richtig</div>
+            <div class="stat-value" style="font-size:1.45rem;">${state.studyResults.correct}</div>
+          </div>
+          <div class="mini-stat">
+            <div class="stat-label">Falsch</div>
+            <div class="stat-value" style="font-size:1.45rem;">${state.studyResults.wrong}</div>
+          </div>
+        </div>
+        <div class="muted small" style="margin-bottom:14px;">Erfolgsquote: ${rate !== null ? rate + '%' : '–'}</div>
+        <div class="stack">
+          <button class="btn btn-primary" onclick="switchView('home')">Zur Übersicht</button>
+          <button class="btn btn-secondary" onclick="switchView('list')">Vokabeln ansehen</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  els.sessionProgress.textContent = `Karte ${state.currentIndex + 1} von ${total}`;
+  els.sessionMeta.textContent = `Fach ${card.box} · nur DE → TR`;
+
+  els.studyContent.innerHTML = `
+    <div class="prompt-box tappable" id="tapCard" role="button" tabindex="0" aria-label="Antwort zeigen">
+      <div class="word-label">Deutsch</div>
+      <div class="word">${escapeHtml(card.german)}</div>
+      <div class="tap-hint">${state.revealed ? 'Antwort sichtbar' : 'Tippe auf die Karte, um die Antwort zu zeigen'}</div>
+    </div>
+
+    ${state.revealed ? `
+      <div class="answer-box">
+        <div class="word-label" style="color:var(--text); opacity:0.72;">Türkisch</div>
+        <div class="word-answer">${escapeHtml(card.turkish)}</div>
+      </div>
+
+      <div class="answer-actions">
+        <button class="btn btn-primary" id="knowBtn">Gewusst</button>
+        <button class="btn btn-danger" id="dontKnowBtn">Nicht gewusst</button>
+      </div>
+    ` : ''}
+  `;
+
+  const tapCard = document.getElementById('tapCard');
+  const knowBtn = document.getElementById('knowBtn');
+  const dontKnowBtn = document.getElementById('dontKnowBtn');
+
+  if (tapCard) {
+    const reveal = () => {
+      if (!state.revealed) {
+        state.revealed = true;
+        renderStudy();
+      }
+    };
+    tapCard.addEventListener('click', reveal);
+    tapCard.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        reveal();
+      }
+    });
+  }
+
+  if (knowBtn) knowBtn.addEventListener('click', () => reviewCard(true));
+  if (dontKnowBtn) dontKnowBtn.addEventListener('click', () => reviewCard(false));
+}
+
+function highlightText(text, query) {
+  if (!query) return escapeHtml(text);
+  const escaped = escapeRegExp(query);
+  const regex = new RegExp(escaped, 'ig');
+  return escapeHtml(text).replace(regex, '<mark>$&</mark>');
+}
+
+function renderList() {
+  const q = els.searchInput.value.trim().toLowerCase();
+  const filtered = sortCards(state.cards).filter(card => {
+    if (!q) return true;
+    return card.german.toLowerCase().includes(q) || card.turkish.toLowerCase().includes(q);
+  });
+
+  if (!filtered.length) {
+    els.listContainer.innerHTML = `
+      <div class="empty">
+        <strong style="display:block; margin-bottom:8px; color:var(--text);">Keine Treffer</strong>
+        ${state.cards.length ? 'Zu deiner Suche wurden keine Vokabeln gefunden.' : 'Noch keine Vokabeln gespeichert.'}
+      </div>
+    `;
+    return;
+  }
+
+  els.listContainer.innerHTML = filtered.map(card => `
+    <article class="item">
+      <div class="item-top">
+        <div>
+          <div class="item-word"><strong>${highlightText(card.german, q)}</strong></div>
+          <div class="item-word">${highlightText(card.turkish, q)}</div>
+          <div class="meta">Fach ${card.box} · fällig am ${formatDate(card.nextReviewAt)} · richtig ${card.correctCount} · falsch ${card.wrongCount}</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" data-edit="${card.id}">Bearbeiten</button>
+        <button class="btn btn-danger" data-delete="${card.id}">Löschen</button>
+      </div>
+    </article>
+  `).join('');
+
+  els.listContainer.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => openEdit(btn.dataset.edit)));
+  els.listContainer.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => openDelete(btn.dataset.delete)));
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    const next = line[i + 1];
+    if (ch === '"' && inQuotes && next === '"') {
+      cur += '"';
+      i++;
+    } else if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(cur);
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  result.push(cur);
+  return result.map(v => v.trim());
+}
+
+function importCSVFromInput(fileInput, statusEl) {
+  const file = fileInput.files && fileInput.files[0];
+  if (!file) {
+    showToast('Bitte zuerst eine CSV auswählen.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const text = String(e.target.result || '');
+      const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
+      if (lines.length < 2) throw new Error('leer');
+
+      const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase());
+      const idx = {
+        german: headers.indexOf('deutsch'),
+        turkish: headers.findIndex(h => h === 'türkisch' || h === 'turkisch'),
+        box: headers.indexOf('fach'),
+        correct: headers.indexOf('richtig'),
+        wrong: headers.indexOf('falsch'),
+        created: headers.indexOf('erstellt am'),
+        last: headers.indexOf('zuletzt gelernt'),
+        next: headers.indexOf('nächste wiederholung')
+      };
+
+      if (idx.german === -1 || idx.turkish === -1) {
+        throw new Error('header');
+      }
+
+      const imported = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        const german = (cols[idx.german] || '').trim();
+        const turkish = (cols[idx.turkish] || '').trim();
+        if (!german || !turkish) continue;
+
+        let box = Number(cols[idx.box]);
+        if (!box || box < 1 || box > 5) box = 1;
+
+        imported.push(normalizeCard({
+          id: 'csv-' + Date.now() + '-' + i,
+          german,
+          turkish,
+          box,
+          createdAt: cols[idx.created] || todayString(),
+          lastReviewedAt: cols[idx.last] || '',
+          nextReviewAt: cols[idx.next] || todayString(),
+          correctCount: Number(cols[idx.correct]) || 0,
+          wrongCount: Number(cols[idx.wrong]) || 0
+        }));
+      }
+
+      state.cards = imported;
+      save();
+      renderAll();
+
+      const msg = imported.length + ' Vokabeln importiert.';
+      statusEl.textContent = msg;
+      els.csvStatus.textContent = msg;
+      els.csvStatusMirror.textContent = msg;
+      showToast(msg);
+    } catch {
+      statusEl.textContent = 'Import fehlgeschlagen.';
+      showToast('CSV konnte nicht importiert werden.');
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function csvEscape(v) {
+  return '"' + String(v ?? '').replace(/"/g, '""') + '"';
+}
+
+function exportCSV(statusEl) {
+  const rows = [
+    ['Deutsch', 'Türkisch', 'Fach', 'Richtig', 'Falsch', 'Erstellt am', 'Zuletzt gelernt', 'Nächste Wiederholung'],
+    ...state.cards.map(c => [
+      c.german,
+      c.turkish,
+      c.box || 1,
+      c.correctCount || 0,
+      c.wrongCount || 0,
+      c.createdAt || '',
+      c.lastReviewedAt || '',
+      c.nextReviewAt || todayString()
+    ])
+  ];
+
+  const csv = rows.map(r => r.map(csvEscape).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'turkisch-vokabeln-mit-fortschritt-' + todayString() + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+
+  const msg = 'CSV mit Fortschritt exportiert.';
+  statusEl.textContent = msg;
+  els.csvStatus.textContent = msg;
+  els.csvStatusMirror.textContent = msg;
+  showToast(msg);
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function formatDate(value) {
+  if (!value) return '–';
+  const d = new Date(value + 'T00:00:00');
+  return new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+}
+
+function renderAll() {
+  renderHome();
+  if (state.currentView === 'study') renderStudy();
+  if (state.currentView === 'list') renderList();
+}
+
+els.navButtons.forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.nav)));
+
+els.modeSelect.addEventListener('change', saveMode);
+
+els.addForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const german = els.germanInput.value.trim();
+  const turkish = els.turkishInput.value.trim();
+  if (!german || !turkish) return;
+
+  if (state.editId) {
+    updateCard(state.editId, german, turkish);
+    state.editId = null;
+    resetAddForm();
+  } else {
+    addCard(german, turkish);
+    els.addForm.reset();
+    showToast('Vokabel hinzugefügt.');
+  }
+  switchView('home');
+});
+
+els.cancelEditInlineBtn.addEventListener('click', cancelEdit);
+
+els.startStudyBtn.addEventListener('click', startSession);
+els.goAddBtn.addEventListener('click', () => {
+  switchView('home');
+  setTimeout(() => els.germanInput.focus(), 80);
+});
+els.goListBtn.addEventListener('click', () => switchView('list'));
+els.goCsvBtn.addEventListener('click', () => switchView('csv'));
+
+els.searchInput.addEventListener('input', renderList);
+
+els.importCsvBtn.addEventListener('click', () => importCSVFromInput(els.csvFile, els.csvStatus));
+els.exportCsvBtn.addEventListener('click', () => exportCSV(els.csvStatus));
+
+els.importCsvBtnMirror.addEventListener('click', () => importCSVFromInput(els.csvFileMirror, els.csvStatusMirror));
+els.exportCsvBtnMirror.addEventListener('click', () => exportCSV(els.csvStatusMirror));
+
+els.cancelDeleteBtn.addEventListener('click', () => els.confirmDialog.close());
+els.confirmDeleteBtn.addEventListener('click', () => {
+  if (state.deleteId) deleteCard(state.deleteId);
+  state.deleteId = null;
+  els.confirmDialog.close();
+});
+
+window.switchView = switchView;
+
+load();
+renderAll();
+</script>
+</body>
+</html>
